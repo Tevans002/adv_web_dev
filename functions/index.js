@@ -168,40 +168,54 @@ exports.queryUser = onRequestasync ( async (request, response)=>{
 })
 
 // THIS IS FORE THE DATABASE
-const admin = require('firebase-admin');
-const { resumeAndPrerender } = require("react-dom/static");
+// const admin = require('firebase-admin');
+// const { resumeAndPrerender } = require("react-dom/static");
 
-admin.initializeApp({
-  credential: admin.credential.cert({
-    projectId: 'YOUR_PROJECT_ID',
-    privateKey: 'YOUR_PRIVATE_KEY',
-    clientEmail: 'YOUR_CLIENT_EMAIL'
-  }),
-});
+// admin.initializeApp({
+//   credential: admin.credential.cert({
+//     projectId: 'YOUR_PROJECT_ID',
+//     privateKey: 'YOUR_PRIVATE_KEY',
+//     clientEmail: 'YOUR_CLIENT_EMAIL'
+//   }),
+// });
 
-const db = admin.firestore();
-const docRef = db.collection('users').doc('12345');
+// const db = admin.firestore();
+// const docRef = db.collection('users').doc('12345');
 
-docRef.set({
-  name: 'John Doe',
-});
+// docRef.set({
+//   name: 'John Doe',
+// });
 
-docRef.get().then(doc => {
-  if (doc.exists) {
-    console.log(doc.data());
-  } else {
-    console.llog('No such document!');
-  }
-});
+// docRef.get().then(doc => {
+//   if (doc.exists) {
+//     console.log(doc.data());
+//   } else {
+//     console.llog('No such document!');
+//   }
+// });
 
-docRef.delete();
+// docRef.delete();
 
-docRef.onSnapshot(doc => {
-  console.log(doc.data());
-})
+// docRef.onSnapshot(doc => {
+//   console.log(doc.data());
+// })
 
 // LAB FOR FEB 6TH PUBSUB
 //firebase ios sdk repo URL: https://github.com/firebase/firebase-ios-sdk
+const admin = require('firebase-admin');
+
+const firebaseConfig = {
+  apiKey: process.env.APIKEY,
+  authDomain: process.env.AUTHDOMAIN,
+  projectId: process.env.PROJECTID,
+  storageBucket: process.env.STORAGEBUCKET,
+  messagingSenderId: process.env.MESSAGINGSENDERID,
+  appleId: process.env.APPID
+};
+
+admin.initializeApp(firebaseConfig);
+const db = admin.firestore();
+
 require('dotenv').config();
 
 const { onSchedule } = require("firebase-functions/v2/scheduler");
