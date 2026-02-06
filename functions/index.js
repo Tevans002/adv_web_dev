@@ -11,6 +11,7 @@ const {setGlobalOptions} = require("firebase-functions");
 const {onRequest} = require("firebase-functions/https");
 const logger = require("firebase-functions/logger");
 
+
 // For cost control, you can set the maximum number of containers that can be
 // running at the same time. This helps mitigate the impact of unexpected
 // traffic spikes by instead downgrading performance. This limit is a
@@ -199,4 +200,27 @@ docRef.onSnapshot(doc => {
   console.log(doc.data());
 })
 
+// LAB FOR FEB 6TH PUBSUB
+//firebase ios sdk repo URL: https://github.com/firebase/firebase-ios-sdk
+require('dotenv').config();
 
+const { onSchedule } = require("firebase-functions/v2/scheduler");
+
+const axios = require('axios');
+
+const params = {}
+
+const docRef = db.collection('weather').doc('WbpR0vUKkM1NRanWXrw0');
+
+exports.pubsub = onSchedule("0 0 * * *", async (event) => {
+  await axios.get('https://api.open-meteo.com/v1/forecast?latitude=46.87&longitude=114.021&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m', {params})
+    .then(response => {
+      const apiResponse = response.data;
+      docRef.set({
+        current: apiResponse,
+      })
+    }).catch(error => {
+      console.log(error);
+    });
+
+})
